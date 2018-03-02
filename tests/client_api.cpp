@@ -90,8 +90,6 @@ TEST(ClientAPI, CreateRoom)
           "alice", "secret", [mtx_client](const mtx::responses::Login &res, ErrType err) {
                   ASSERT_FALSE(err);
                   validate_login("@alice:localhost", res);
-
-                  mtx_client->set_access_token(res.access_token);
           });
 
         // Waiting for the previous request to complete.
@@ -217,18 +215,18 @@ TEST(ClientAPI, CreateRoomInvites)
         auto carl  = std::make_shared<Client>("localhost");
 
         alice->login("alice", "secret", [alice](const mtx::responses::Login &res, ErrType err) {
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-                alice->set_access_token(res.access_token);
         });
 
         bob->login("bob", "secret", [bob](const mtx::responses::Login &res, ErrType err) {
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-                bob->set_access_token(res.access_token);
         });
 
         carl->login("carl", "secret", [carl](const mtx::responses::Login &res, ErrType err) {
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-                carl->set_access_token(res.access_token);
         });
 
         // Waiting for the previous requests to complete.
@@ -260,13 +258,13 @@ TEST(ClientAPI, JoinRoom)
         auto bob   = std::make_shared<Client>("localhost");
 
         alice->login("alice", "secret", [alice](const mtx::responses::Login &res, ErrType err) {
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-                alice->set_access_token(res.access_token);
         });
 
         bob->login("bob", "secret", [bob](const mtx::responses::Login &res, ErrType err) {
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-                bob->set_access_token(res.access_token);
         });
 
         // Waiting for the previous requests to complete.
@@ -303,13 +301,13 @@ TEST(ClientAPI, LeaveRoom)
         auto bob   = std::make_shared<Client>("localhost");
 
         alice->login("alice", "secret", [alice](const mtx::responses::Login &res, ErrType err) {
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-                alice->set_access_token(res.access_token);
         });
 
         bob->login("bob", "secret", [bob](const mtx::responses::Login &res, ErrType err) {
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-                bob->set_access_token(res.access_token);
         });
 
         // Waiting for the previous requests to complete.
@@ -349,8 +347,8 @@ TEST(ClientAPI, Sync)
 
         mtx_client->login(
           "alice", "secret", [mtx_client](const mtx::responses::Login &res, ErrType err) {
+                  boost::ignore_unused(res);
                   ASSERT_FALSE(err);
-                  mtx_client->set_access_token(res.access_token);
           });
 
         // Waiting for the previous request to complete.
