@@ -243,7 +243,16 @@ Client::logout(std::function<void(const mtx::responses::Logout &response,
 {
         mtx::requests::Logout req;
 
-        post<mtx::requests::Logout, mtx::responses::Logout>("/logout", req, callback, true);
+        post<mtx::requests::Logout, mtx::responses::Logout>("/logout", req, 
+			[this,callback](const mtx::responses::Logout &res,
+			       	std::experimental::optional<mtx::client::errors::ClientError> err) {
+				if(!err) {
+					// Clear the now invalid access token when logout is successful 
+					access_token_.clear();
+				}
+				// Pass up response and error to supplied callback
+				callback(res, err);
+			});
 }
 
 void
