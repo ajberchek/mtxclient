@@ -121,7 +121,7 @@ TEST(ClientAPI, LogoutSuccess)
           });
         while (token.empty()) {
                 // Block while we are logging in
-                continue;
+                std::this_thread::sleep_for(std::chrono::milliseconds(300));
         }
         mtx_client->set_access_token(token);
         mtx::requests::CreateRoom req;
@@ -140,7 +140,7 @@ TEST(ClientAPI, LogoutSuccess)
         });
         while (token.size()) {
                 // Block while we are logging out
-                continue;
+                std::this_thread::sleep_for(std::chrono::milliseconds(300));
         }
         // Verify that sending requests with this mtx_client fails after logout
         mtx::requests::CreateRoom failReq;
@@ -171,7 +171,7 @@ TEST(ClientAPI, LogoutInvalidatesTokenOnServer)
           });
         while (token.empty()) {
                 // Block while we are logging in
-                continue;
+                std::this_thread::sleep_for(std::chrono::milliseconds(300));
         }
         mtx_client->set_access_token(token);
         mtx::requests::CreateRoom req;
@@ -192,7 +192,7 @@ TEST(ClientAPI, LogoutInvalidatesTokenOnServer)
         });
         while (token.size()) {
                 // Block while we are logging out
-                continue;
+                std::this_thread::sleep_for(std::chrono::milliseconds(300));
         }
         // Verify that creating a room with the old access_token_ no longer succeeds after logout
         mtx::requests::CreateRoom failReq;
