@@ -23,8 +23,6 @@ validate_login(const std::string &user, const mtx::responses::Login &res)
         ASSERT_TRUE(res.device_id.size() > 5);
 }
 
-
-
 TEST(ClientAPI, LoginSuccess)
 {
         std::shared_ptr<Client> mtx_client = std::make_shared<Client>("localhost");
@@ -84,8 +82,6 @@ TEST(ClientAPI, LoginWrongUsername)
         mtx_client->close();
 }
 
-
-
 TEST(ClientAPI, CreateRoom)
 {
         std::shared_ptr<Client> mtx_client = std::make_shared<Client>("localhost");
@@ -116,47 +112,47 @@ TEST(ClientAPI, CreateRoom)
 TEST(ClientAPI, LogoutSuccess)
 {
         std::shared_ptr<Client> mtx_client = std::make_shared<Client>("localhost");
-	std::string token;
+        std::string token;
 
-	// Login and prove that login was successful by creating a room
-        mtx_client->login("alice", "secret", [&token](const mtx::responses::Login &res, ErrType err) {
-                ASSERT_FALSE(err);
-                validate_login("@alice:localhost", res);
-		token = res.access_token;
-        });
-	while(token.empty()) {
-		// Block while we are logging in
-		continue;
-	}
-	mtx_client->set_access_token(token);
-	mtx::requests::CreateRoom req;
+        // Login and prove that login was successful by creating a room
+        mtx_client->login(
+          "alice", "secret", [&token](const mtx::responses::Login &res, ErrType err) {
+                  ASSERT_FALSE(err);
+                  validate_login("@alice:localhost", res);
+                  token = res.access_token;
+          });
+        while (token.empty()) {
+                // Block while we are logging in
+                continue;
+        }
+        mtx_client->set_access_token(token);
+        mtx::requests::CreateRoom req;
         req.name  = "Test1";
         req.topic = "Topic1";
         mtx_client->create_room(req, [](const mtx::responses::CreateRoom &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-	});
-
-
-	// Logout and prove that logout was successful and deleted the access_token_ for the client
-	mtx_client->logout([mtx_client, &token](const mtx::responses::Logout &res, ErrType err) {
-		boost::ignore_unused(res);
-                ASSERT_FALSE(err);
-		token.clear();
         });
-	while(token.size()) {
-		// Block while we are logging out
-		continue;
-	}
-	// Verify that sending requests with this mtx_client fails after logout
-	mtx::requests::CreateRoom failReq;
+
+        // Logout and prove that logout was successful and deleted the access_token_ for the client
+        mtx_client->logout([mtx_client, &token](const mtx::responses::Logout &res, ErrType err) {
+                boost::ignore_unused(res);
+                ASSERT_FALSE(err);
+                token.clear();
+        });
+        while (token.size()) {
+                // Block while we are logging out
+                continue;
+        }
+        // Verify that sending requests with this mtx_client fails after logout
+        mtx::requests::CreateRoom failReq;
         failReq.name  = "42";
         failReq.topic = "LifeUniverseEverything";
         mtx_client->create_room(failReq, [](const mtx::responses::CreateRoom &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_TRUE(err);
-		EXPECT_EQ(mtx::errors::to_string(err->matrix_error.errcode), "M_MISSING_TOKEN");
-		EXPECT_EQ(err->status_code, boost::beast::http::status::forbidden);
+                EXPECT_EQ(mtx::errors::to_string(err->matrix_error.errcode), "M_MISSING_TOKEN");
+                EXPECT_EQ(err->status_code, boost::beast::http::status::forbidden);
 
         });
 
@@ -166,48 +162,49 @@ TEST(ClientAPI, LogoutSuccess)
 TEST(ClientAPI, LogoutInvalidatesTokenOnServer)
 {
         std::shared_ptr<Client> mtx_client = std::make_shared<Client>("localhost");
-	std::string token;
+        std::string token;
 
-	// Login and prove that login was successful by creating a room
-        mtx_client->login("alice", "secret", [&token](const mtx::responses::Login &res, ErrType err) {
-                ASSERT_FALSE(err);
-                validate_login("@alice:localhost", res);
-		token = res.access_token;
-        });
-	while(token.empty()) {
-		// Block while we are logging in
-		continue;
-	}
-	mtx_client->set_access_token(token);
-	mtx::requests::CreateRoom req;
+        // Login and prove that login was successful by creating a room
+        mtx_client->login(
+          "alice", "secret", [&token](const mtx::responses::Login &res, ErrType err) {
+                  ASSERT_FALSE(err);
+                  validate_login("@alice:localhost", res);
+                  token = res.access_token;
+          });
+        while (token.empty()) {
+                // Block while we are logging in
+                continue;
+        }
+        mtx_client->set_access_token(token);
+        mtx::requests::CreateRoom req;
         req.name  = "Test1";
         req.topic = "Topic1";
         mtx_client->create_room(req, [](const mtx::responses::CreateRoom &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
-	});
-
-
-	// Logout and prove that logout was successful by verifying the old access_token_ is no longer valid 
-	mtx_client->logout([mtx_client, &token](const mtx::responses::Logout &res, ErrType err) {
-		boost::ignore_unused(res);
-                ASSERT_FALSE(err);
-		mtx_client->set_access_token(token);
-		token.clear();
         });
-	while(token.size()) {
-		// Block while we are logging out
-		continue;
-	}
-	// Verify that creating a room with the old access_token_ no longer succeeds after logout
-	mtx::requests::CreateRoom failReq;
+
+        // Logout and prove that logout was successful by verifying the old access_token_ is no
+        // longer valid
+        mtx_client->logout([mtx_client, &token](const mtx::responses::Logout &res, ErrType err) {
+                boost::ignore_unused(res);
+                ASSERT_FALSE(err);
+                mtx_client->set_access_token(token);
+                token.clear();
+        });
+        while (token.size()) {
+                // Block while we are logging out
+                continue;
+        }
+        // Verify that creating a room with the old access_token_ no longer succeeds after logout
+        mtx::requests::CreateRoom failReq;
         failReq.name  = "42";
         failReq.topic = "LifeUniverseEverything";
         mtx_client->create_room(failReq, [](const mtx::responses::CreateRoom &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_TRUE(err);
-		EXPECT_EQ(mtx::errors::to_string(err->matrix_error.errcode), "M_UNKNOWN_TOKEN");
-		EXPECT_EQ(err->status_code, boost::beast::http::status::forbidden);
+                EXPECT_EQ(mtx::errors::to_string(err->matrix_error.errcode), "M_UNKNOWN_TOKEN");
+                EXPECT_EQ(err->status_code, boost::beast::http::status::forbidden);
         });
 
         mtx_client->close();
@@ -376,5 +373,3 @@ TEST(ClientAPI, Sync)
 
         mtx_client->close();
 }
-
-
