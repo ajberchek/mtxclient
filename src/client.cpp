@@ -228,6 +228,15 @@ Client::login(
 }
 
 void
+Client::logout(std::function<void(const mtx::responses::Logout &response,
+			std::experimental::optional<mtx::client::errors::ClientError>)> callback)
+{
+        mtx::requests::Logout req;
+
+        post<mtx::requests::Logout, mtx::responses::Logout>("/logout", req, callback, true);
+}
+
+void
 Client::create_room(const mtx::requests::CreateRoom &room_options,
                     std::function<void(const mtx::responses::CreateRoom &, RequestErr)> callback)
 {
