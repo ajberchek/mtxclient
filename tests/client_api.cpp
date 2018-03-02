@@ -114,17 +114,17 @@ TEST(ClientAPI, CreateRoomInvites)
         auto carl  = std::make_shared<Client>("localhost");
 
         alice->login("alice", "secret", [alice](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
         });
 
         bob->login("bob", "secret", [bob](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
         });
 
         carl->login("carl", "secret", [carl](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
         });
 
@@ -157,12 +157,12 @@ TEST(ClientAPI, JoinRoom)
         auto bob   = std::make_shared<Client>("localhost");
 
         alice->login("alice", "secret", [alice](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
         });
 
         bob->login("bob", "secret", [bob](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
         });
 
@@ -200,12 +200,12 @@ TEST(ClientAPI, LeaveRoom)
         auto bob   = std::make_shared<Client>("localhost");
 
         alice->login("alice", "secret", [alice](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
         });
 
         bob->login("bob", "secret", [bob](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
+                boost::ignore_unused(res);
                 ASSERT_FALSE(err);
         });
 
@@ -246,8 +246,8 @@ TEST(ClientAPI, Sync)
 
         mtx_client->login(
           "alice", "secret", [mtx_client](const mtx::responses::Login &res, ErrType err) {
-		boost::ignore_unused(res);
-		ASSERT_FALSE(err);
+                  boost::ignore_unused(res);
+                  ASSERT_FALSE(err);
           });
 
         // Waiting for the previous request to complete.
