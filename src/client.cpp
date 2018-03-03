@@ -230,6 +230,7 @@ Client::login(
           [this, callback](const mtx::responses::Login &resp,
                            std::experimental::optional<mtx::client::errors::ClientError> err) {
                   if (!err && resp.access_token.size()) {
+                          user_id_      = resp.user_id;
                           access_token_ = resp.access_token;
                   }
                   callback(resp, err);
@@ -265,7 +266,8 @@ Client::set_displayname(
         mtx::requests::DisplayName req;
         req.displayname = displayname;
 
-        put<mtx::requests::Login, mtx::responses::Login>("/profile/" + user_id_.toString() + "/displayname",req,callback);
+        put<mtx::requests::Login, mtx::responses::Login>(
+          "/profile/" + user_id_.toString() + "/displayname", req, callback);
 }
 
 void
