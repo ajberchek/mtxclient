@@ -257,6 +257,16 @@ Client::logout(
                   callback(res, err);
           });
 }
+Client::set_displayname(
+  const std::string &displayname,
+  std::function<void(const mtx::responses::DisplayName &response,
+                     std::experimental::optional<mtx::client::errors::ClientError>)> callback)
+{
+        mtx::requests::DisplayName req;
+        req.displayname = displayname;
+
+        put<mtx::requests::Login, mtx::responses::Login>("/profile/" + user_id_.toString() + "/displayname",req,callback);
+}
 
 void
 Client::create_room(const mtx::requests::CreateRoom &room_options,
