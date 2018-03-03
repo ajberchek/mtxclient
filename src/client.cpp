@@ -260,13 +260,12 @@ Client::logout(
 }
 Client::set_displayname(
   const std::string &displayname,
-  std::function<void(const mtx::responses::DisplayName &response,
-                     std::experimental::optional<mtx::client::errors::ClientError>)> callback)
+  std::function<void(std::experimental::optional<mtx::client::errors::ClientError>)> callback)
 {
         mtx::requests::DisplayName req;
         req.displayname = displayname;
 
-        put<mtx::requests::Login, mtx::responses::Login>(
+        put<mtx::requests::DisplayName>(
           "/profile/" + user_id_.toString() + "/displayname", req, callback);
 }
 

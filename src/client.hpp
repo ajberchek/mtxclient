@@ -50,9 +50,7 @@ public:
         //! Perform logout.
         void logout(std::function<void(const mtx::responses::Logout &response, RequestErr err)>);
         //! Change displayname.
-        void set_displayname(
-          const std::string &displayname,
-          std::function<void(const mtx::responses::DisplayName &response, RequestErr err)>);
+        void set_displayname(const std::string &displayname, std::function<void(RequestErr err)>);
         //! Create a room with the given options.
         void create_room(
           const mtx::requests::CreateRoom &room_options,
@@ -151,7 +149,7 @@ private:
         //! The access token that would be used for authentication.
         std::string access_token_;
         //! The user ID associated with the client.
-        std::string user_id_;
+        mtx::identifiers::User user_id_;
         //! The token that will be used as the 'since' parameter on the next sync request.
         std::string next_batch_token_;
 };
@@ -194,16 +192,18 @@ void
 mtx::client::Client::put(
   const std::string &endpoint,
   const Request &req,
-  std::function<void(std::experimental::optional<mtx::client::errors::ClientError>)> callback,
+  std::function<void(std::experimental::optional<mtx::client::errors::ClientError>)> call,
   bool requires_auth)
 {
         // Serialize request.
         nlohmann::json j = req;
 
-        using CallbackType =
-          std::function<void(std::experimental::optional<mtx::client::errors::ClientError>)>;
+        using CallbackType = std::function<void(
+          mtx::responses::Empty, std::experimental::optional<mtx::client::errors::ClientError>)>;
 
-        std::shared_ptr<Session> session = create_session<CallbackType>(callback);
+        std::shared_ptr<Session> session = create_session<mtx::responses::Empty, CallbackType>(
+          [call](const mtx::responses::Empty,
+                 std::experimental::optional<mtx::client::errors::ClientError> err) { call(err); });
 
         session->request.method(boost::beast::http::verb::put);
         session->request.target("/_matrix/client/r0" + endpoint);
