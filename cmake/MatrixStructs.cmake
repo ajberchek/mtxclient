@@ -12,8 +12,8 @@ set(MATRIX_STRUCTS_INCLUDE_DIRS ${MATRIX_STRUCTS_ROOT}/deps)
 ExternalProject_Add(
   MatrixStructs
 
-  GIT_REPOSITORY https://github.com/mujx/matrix-structs
-  GIT_TAG 83be1388e632a43f0570857cb79313c09fb3da0b
+  GIT_REPOSITORY https://github.com/ajberchek/matrix-structs
+  GIT_TAG f3fdd6e0798d90140d2be37503fd6293c634b293
 
   BUILD_IN_SOURCE 1
   SOURCE_DIR ${MATRIX_STRUCTS_ROOT}
