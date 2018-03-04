@@ -111,12 +111,7 @@ TEST(ClientAPI, EmptyDisplayName)
 
                   // Change the display name to an empty string and verify its success through the
                   // lack of an error
-                  mtx_client->set_displayname("", [](ErrType err) {
-                          std::cout << mtx::errors::to_string(err->matrix_error.errcode)
-                                    << std::endl;
-
-                          ASSERT_FALSE(err);
-                  });
+                  mtx_client->set_displayname("", [](ErrType err) { ASSERT_FALSE(err); });
           });
 
         mtx_client->close();

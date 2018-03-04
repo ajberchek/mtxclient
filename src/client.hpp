@@ -103,6 +103,14 @@ private:
                              std::experimental::optional<mtx::client::errors::ClientError>)>,
           bool requires_auth = true);
 
+        // put function for the PUT HTTP requests that send responses
+        template<class Request, class Response>
+        void put(const std::string &endpoint,
+                 const Request &req,
+                 std::function<void(const Response &,
+                                    std::experimental::optional<mtx::client::errors::ClientError>)>,
+                 bool requires_auth = true);
+
         template<class Request>
         void put(const std::string &endpoint,
                  const Request &req,
@@ -187,6 +195,39 @@ mtx::client::Client::post(
         do_request(session);
 }
 
+// put function for the PUT HTTP requests that send responses
+template<class Request, class Response>
+void
+mtx::client::Client::put(
+  const std::string &endpoint,
+  const Request &req,
+  std::function<void(const Response &,
+                     std::experimental::optional<mtx::client::errors::ClientError>)> callback,
+  bool requires_auth)
+{
+        // Serialize request.
+        nlohmann::json j = req;
+
+        using CallbackType = std::function<void(
+          const Response &, std::experimental::optional<mtx::client::errors::ClientError>)>;
+
+        std::shared_ptr<Session> session = create_session<Response, CallbackType>(callback);
+
+        session->request.method(boost::beast::http::verb::put);
+        session->request.target("/_matrix/client/r0" + endpoint);
+        session->request.set(boost::beast::http::field::user_agent, "mtxclient v0.1.0");
+        session->request.set(boost::beast::http::field::content_type, "application/json");
+        session->request.set(boost::beast::http::field::host, session->host);
+        if (requires_auth && !access_token_.empty())
+                session->request.set(boost::beast::http::field::authorization,
+                                     "Bearer " + access_token_);
+        session->request.body() = j.dump();
+        session->request.prepare_payload();
+
+        do_request(session);
+}
+
+// provides PUT functionality for the endpoints which dont respond with a body
 template<class Request>
 void
 mtx::client::Client::put(
