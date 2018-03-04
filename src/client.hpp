@@ -192,7 +192,7 @@ void
 mtx::client::Client::put(
   const std::string &endpoint,
   const Request &req,
-  std::function<void(std::experimental::optional<mtx::client::errors::ClientError>)> call,
+  std::function<void(std::experimental::optional<mtx::client::errors::ClientError>)> callback,
   bool requires_auth)
 {
         // Serialize request.
@@ -202,8 +202,10 @@ mtx::client::Client::put(
           mtx::responses::Empty, std::experimental::optional<mtx::client::errors::ClientError>)>;
 
         std::shared_ptr<Session> session = create_session<mtx::responses::Empty, CallbackType>(
-          [call](const mtx::responses::Empty,
-                 std::experimental::optional<mtx::client::errors::ClientError> err) { call(err); });
+          [callback](const mtx::responses::Empty,
+                     std::experimental::optional<mtx::client::errors::ClientError> err) {
+                  callback(err);
+          });
 
         session->request.method(boost::beast::http::verb::put);
         session->request.target("/_matrix/client/r0" + endpoint);
