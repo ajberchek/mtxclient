@@ -258,6 +258,8 @@ Client::logout(
                   callback(res, err);
           });
 }
+
+void
 Client::set_displayname(
   const std::string &displayname,
   std::function<void(std::experimental::optional<mtx::client::errors::ClientError>)> callback)
