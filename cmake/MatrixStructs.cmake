@@ -13,7 +13,7 @@ ExternalProject_Add(
   MatrixStructs
 
   GIT_REPOSITORY https://github.com/ajberchek/matrix-structs
-  GIT_TAG e7a4be2176dd0a321f48b5ef5ce156112c843fb3
+  GIT_TAG 514fd8335ff313cf1f5c483b9572506d18303773
 
   BUILD_IN_SOURCE 1
   SOURCE_DIR ${MATRIX_STRUCTS_ROOT}
